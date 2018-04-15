@@ -1,5 +1,7 @@
+#pragma once
 #include "Hand.h"
 #include "BetHistory.h"
+#include "PlayerType.h"
 
 class Player{
 	public:	
@@ -10,9 +12,11 @@ class Player{
 		Hand getHand();
 		void setChips(int);
 		int getChips();
+		PlayerType getType();
 
-	private:
+	protected:
 		int id;
 		Hand hand;
 		int chips;
+		PlayerType type;
 };

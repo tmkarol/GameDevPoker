@@ -24,3 +24,7 @@ int Player::getChips(){
 
 }
 
+PlayerType Player::getType(){
+	return type;
+}
+

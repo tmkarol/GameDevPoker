@@ -6,6 +6,7 @@ using namespace std;
 Card::Card(string cardName, int cardVal){
 	name = cardName;
 	value = cardVal;
+	faceUp = false;
 }
 
 string Card::getCardName(){
@@ -21,5 +22,5 @@ bool Card::isFaceUp(){
 }
 
 void Card::setFaceUp(bool isFaceUp){
-
+	faceUp = isFaceUp;
 }

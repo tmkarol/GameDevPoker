@@ -6,7 +6,7 @@
 class Player{
 	public:	
 		Player();
-		virtual int getBet(Hand, BetHistory, int, int) = 0;
+		virtual int getBet(Hand, BetHistory, int, int, bool, bool) = 0;
 		void setHand(Hand);
 		Hand getHand();
 		void setChips(int);

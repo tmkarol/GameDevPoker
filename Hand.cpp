@@ -35,7 +35,7 @@ Hand Hand::getVisible(){
 }
 
 int Hand::evaluateHand(){
-	int total;
+	int total = 0;
 	for(int i = 0; i < cards.size(); ++i){
 		total += cards.at(i).getCardValue();
 	}

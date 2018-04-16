@@ -3,28 +3,28 @@
 
 using namespace std;
 
-Card::Card(){
+Card::Card() {
 	faceUp = false;
 }
 
-Card::Card(string cardName, int cardVal){
+Card::Card(string cardName, int cardVal) {
 	name = cardName;
 	value = cardVal;
 	faceUp = false;
 }
 
-string Card::getCardName(){
+string Card::getCardName() {
 	return name;
 }
 
-int Card::getCardValue(){
+int Card::getCardValue() {
 	return value;
 }
 
-bool Card::isFaceUp(){
+bool Card::isFaceUp() {
 	return faceUp;
 }
 
-void Card::setFaceUp(bool isFaceUp){
+void Card::setFaceUp(bool isFaceUp) {
 	faceUp = isFaceUp;
 }

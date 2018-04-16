@@ -3,13 +3,12 @@
 #include <vector>
 
 using namespace std;
-class BetHistory{
-	public:
-		void clearHistory();
-		void addBet(Bet);
-		int getCount();
-		Bet getBet(int);
+class BetHistory {
+public:
+	void clearHistory(); //clears bet vector
+	void addBet(Bet); //adds Bet object to vector of bets
+	int getCount(); //returns size of bets vector
 
-	private:
-		vector<Bet> bets;
+private:
+	vector<Bet> bets;
 };

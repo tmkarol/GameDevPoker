@@ -3,19 +3,17 @@
 #include "BetHistory.h"
 #include "PlayerType.h"
 
-class Player{
-	public:	
-		Player();
-		virtual int getBet(Hand, BetHistory, int, int, bool, bool) = 0;
-		void setHand(Hand);
-		Hand getHand();
-		void setChips(int);
-		int getChips();
-		PlayerType getType();
+class Player {
+public:
+	Player();
+	virtual int getBet(Hand, BetHistory, int, int, bool, bool) = 0; //abstract function to be implemented by child types
+	void setHand(Hand);//assigns Hand object to player
+	Hand getHand();//returns the Hand object belonging to the player
+	void setChips(int);//assigns chip amount to player
+	int getChips();//returns amount of chips belonging to player
 
-	protected:
-		Hand hand;
-		int chips;
-		PlayerType type;
+protected:
+	Hand hand; //Hand of cards belonging to the player
+	int chips; //chips belonging to the player
 
 };

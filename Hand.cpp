@@ -3,30 +3,27 @@
 
 using namespace std;
 
-Hand::Hand(){
+Hand::Hand() {
 
 }
 
-void Hand::clearHand(){
-	cards.clear();
-}
-
-void Hand::addCard(Card card){
+void Hand::addCard(Card card) {
 	cards.push_back(card);
 }
 
-int Hand::getCount(){
+int Hand::getCount() {
 	return cards.size();
 }
 
-Card Hand::getCard(int index){
+Card Hand::getCard(int index) {
 	return cards.at(index);
 }
 
-Hand Hand::getVisible(){
+Hand Hand::getVisible() {
 	Hand visible;
-	for(int i = 0; i < cards.size(); ++i){
-		if(cards.at(i).isFaceUp()){
+	//loop through cards in this Hand object and add only visible ones to the new object
+	for (int i = 0; i < cards.size(); ++i) {
+		if (cards.at(i).isFaceUp()) {
 			visible.addCard(cards.at(i));
 		}
 	}
@@ -34,16 +31,17 @@ Hand Hand::getVisible(){
 	return visible;
 }
 
-int Hand::evaluateHand(){
+int Hand::evaluateHand() {
 	int total = 0;
-	for(int i = 0; i < cards.size(); ++i){
+	//loop through cards and total their values
+	for (int i = 0; i < cards.size(); ++i) {
 		total += cards.at(i).getCardValue();
 	}
 	return total;
 }
 
-void Hand::print(){
-	for(int i = 0; i < cards.size(); ++i){
+void Hand::print() {
+	for (int i = 0; i < cards.size(); ++i) {
 		cout << cards.at(i).getCardValue() << " of " << cards.at(i).getCardName() << endl;
 	}
 }

@@ -1,25 +1,22 @@
 #include "Player.h"
 
-Player::Player(){
-	
+Player::Player() {
+
 }
 
-void Player::setHand(Hand playerHand){
+void Player::setHand(Hand playerHand) {
 	hand = playerHand;
 }
 
-Hand Player::getHand(){
+Hand Player::getHand() {
 	return hand;
 }
 
-void Player::setChips(int playerChips){
+void Player::setChips(int playerChips) {
 	chips = playerChips;
 }
 
-int Player::getChips(){
+int Player::getChips() {
 	return chips;
 }
 
-PlayerType Player::getType(){
-	return type;
-}

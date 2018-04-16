@@ -7,7 +7,7 @@ HumanPlayer::HumanPlayer() {
 }
 
 int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, bool lastRound, bool canRaise) {
-	char decision;
+	char decision, raiseChar;
 	int raise;
 
 	//show player's hand

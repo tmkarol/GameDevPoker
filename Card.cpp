@@ -3,6 +3,10 @@
 
 using namespace std;
 
+Card::Card(){
+	faceUp = false;
+}
+
 Card::Card(string cardName, int cardVal){
 	name = cardName;
 	value = cardVal;

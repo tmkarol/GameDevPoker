@@ -5,9 +5,8 @@
 
 class Player{
 	public:	
-		virtual int getBet(Hand, BetHistory, int, bool, int) = 0;
-		void setID(int);
-		int getID();
+		Player();
+		virtual int getBet(Hand, BetHistory, int, int) = 0;
 		void setHand(Hand);
 		Hand getHand();
 		void setChips(int);
@@ -15,8 +14,8 @@ class Player{
 		PlayerType getType();
 
 	protected:
-		int id;
 		Hand hand;
 		int chips;
 		PlayerType type;
+
 };

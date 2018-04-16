@@ -4,6 +4,7 @@
 using namespace std;
 class Card{
 	public:
+		Card();
 		Card(string, int);
 		string getCardName();
 		int getCardValue();

@@ -1,30 +1,25 @@
 #include "Player.h"
 
-void Player::setID(int ID){
-
-}
-
-int Player::getID(){
-
+Player::Player(){
+	
 }
 
 void Player::setHand(Hand playerHand){
-
+	hand = playerHand;
 }
 
 Hand Player::getHand(){
-
+	return hand;
 }
 
 void Player::setChips(int playerChips){
-
+	chips = playerChips;
 }
 
 int Player::getChips(){
-
+	return chips;
 }
 
 PlayerType Player::getType(){
 	return type;
 }
-

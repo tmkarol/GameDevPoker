@@ -3,5 +3,6 @@
 
 class AlphaPlayer: public Player{
 	public:
-		int getBet(Hand, BetHistory, int, bool, int);
+		AlphaPlayer();
+		int getBet(Hand, BetHistory, int, int);
 };

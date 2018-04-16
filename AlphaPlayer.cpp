@@ -1,5 +1,9 @@
 #include "AlphaPlayer.h"
 
-int AlphaPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, bool canRaise, int pot){
-	
+AlphaPlayer::AlphaPlayer(){
+	type = ALPHA;
+}
+
+int AlphaPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot){
+	return 40;
 }

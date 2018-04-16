@@ -4,5 +4,5 @@
 class HumanPlayer: public Player{
 	public:
 		HumanPlayer();
-		int getBet(Hand, BetHistory, int, bool, int);
+		int getBet(Hand, BetHistory, int, int);
 };

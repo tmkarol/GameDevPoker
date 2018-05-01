@@ -6,7 +6,7 @@
 class Player {
 public:
 	Player();
-	virtual int getBet(Hand, BetHistory, int, int, bool, bool) = 0; //abstract function to be implemented by child types
+	virtual int getBet(Hand, BetHistory, int, int, bool, bool, bool) = 0; //abstract function to be implemented by child types
 	void setHand(Hand);//assigns Hand object to player
 	Hand getHand();//returns the Hand object belonging to the player
 	void setChips(int);//assigns chip amount to player

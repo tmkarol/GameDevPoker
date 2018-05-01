@@ -4,5 +4,5 @@
 class HumanPlayer: public Player {
 public:
 	HumanPlayer();
-	int getBet(Hand, BetHistory, int, int, bool, bool); //get input from user to determine bet amount to give
+	int getBet(Hand, BetHistory, int, int, bool, bool, bool); //get input from user to determine bet amount to give
 };

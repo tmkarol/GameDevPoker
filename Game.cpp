@@ -7,10 +7,45 @@ Game::Game() {
 	srand(time(0)); //seed the RNG once at the beginning to continue to randomly shuffle correctly
 	handsPlayed = 1; //first hand is played as 1 instead of 0 to easily output the Hand round currently being played and to calculate when each player leads the betting round
 	pot = 0;
+	p1Wins = 0;
+	p2Wins = 0;
+}
+
+void Game::monteCarlo() {
+	int numGames = 0;
+	cout << "How many games would like the AIs to play? ";
+	cin >> numGames;
+	for(int i = 0; i < numGames; ++i){
+		pot = 0;
+		handsPlayed = 1;
+		playGame(ALPHA, BETA, 1000, 1000, false);
+	}
+	cout << "Alpha player won " << p1Wins << " games! Average: ";
+	if(p1Wins > 0){
+		cout << ((double)p1Wins / (double)numGames) * 100 << "%" << endl;
+	}
+	else if(p1Wins == numGames){
+		cout << "100%" << endl;
+	}
+	else{
+		cout << "0%" << endl;
+	}
+	cout << "Beta player won " << p2Wins << " games! Average: ";
+	if(p2Wins > 0){
+		cout << ((double)p2Wins / (double)numGames) * 100 << "%" << endl;
+	}
+	else if(p2Wins == numGames){
+		cout << "100%" << endl;
+	}
+	else{
+		cout << "0%" << endl;
+	}
 }
 
 bool Game::playGame(PlayerType p0, PlayerType p1, int chips0, int chips1, bool reportFlag) {
-	cout << endl << "Welcome to Blockhead Poker! Enter 'Q' at any point to quit" << endl << endl;
+	if (reportFlag) {
+		cout << endl << "Welcome to Blockhead Poker! Enter 'Q' at any point to quit" << endl << endl;
+	}
 
 	//Set the two players to be the correct type
 	if (p0 == HUMAN) {
@@ -18,6 +53,9 @@ bool Game::playGame(PlayerType p0, PlayerType p1, int chips0, int chips1, bool r
 	}
 	else if (p0 == ALPHA) {
 		playerZero = new AlphaPlayer;
+	}
+	else if (p0 == BETA) {
+		playerZero = new BetaPlayer;
 	}
 
 	if (p1 == HUMAN) {
@@ -27,34 +65,47 @@ bool Game::playGame(PlayerType p0, PlayerType p1, int chips0, int chips1, bool r
 	else if (p1 == ALPHA) {
 		playerOne = new AlphaPlayer;
 	}
+	else if (p1 == BETA) {
+		playerOne = new BetaPlayer;
+	}
 
 	//Initialize players' chips
 	playerZero->setChips(chips0);
 	playerOne->setChips(chips1);
 
-	reporting = reportFlag;
+	Hand *newOneHand = new Hand(), *newTwoHand = new Hand();
+	playerZero->setHand(*newOneHand);
+	playerOne->setHand(*newTwoHand);
+
 
 	//loop executing game for 20 total hands
 	while (handsPlayed <= 20) {
-		playAHand();
+		playAHand(reportFlag);
 		++handsPlayed;
 		//between each hand, players need to be initialized with a new, empty hand
-		Hand newHand;
-		playerZero->setHand(newHand);
-		playerOne->setHand(newHand);
+		playerZero->setHand(*newOneHand);
+		playerOne->setHand(*newTwoHand);
 	}
 
 	//calculate the overall winner
 	if (playerZero->getChips() > playerOne->getChips()) {
-		cout << "Player one wins!" << endl;
+		if (reportFlag) {
+			cout << "You win!" << endl;
+		}
+		++p1Wins;
 	}
 
 	else if (playerZero->getChips() < playerOne->getChips()) {
-		cout << "Player two wins!" << endl;
+		if (reportFlag) {
+			cout << "AI wins!" << endl;
+		}
+		++p2Wins;
 	}
 
 	else {
-		cout << "You tie!" << endl;
+		if (reportFlag) {
+			cout << "You tie!" << endl;
+		}
 	}
 
 	return true;
@@ -107,8 +158,11 @@ void Game::makeCards(string name) {
 	}
 }
 
-void Game::playAHand() {
-	cout << "Hand #" << handsPlayed << endl << endl;
+void Game::playAHand(bool reportFlag) {
+	if (reportFlag) {
+		cout << "Hand #" << handsPlayed << endl << endl;
+	}
+
 	deck.clear(); //since deck will be regenerated, empty the cards that are left from the previous hand
 	history.clearHistory(); //clear the betting history from the previous hand
 	shuffleDeck(); //regenerate and shuffle deck
@@ -140,17 +194,19 @@ void Game::playAHand() {
 
 	int bettingResult;
 	lastRaise = 0; //initialize the lastRaise to 0 before the betting round
-	cout << "Betting Round 1:" << endl << endl;
+	if (reportFlag) {
+		cout << "Betting Round 1:" << endl << endl;
+	}
 
-	bettingResult = bettingRound(firstBetter, false);
+	bettingResult = bettingRound(firstBetter, false, reportFlag);
 	//if the second player folded, first player wins the hand
 	if (bettingResult == 1) {
-		declareHandWinner(0);
+		declareHandWinner(0, reportFlag);
 		return;
 	}
 	//if first player folded, second player wins the hand
 	else if (bettingResult == 0) {
-		declareHandWinner(1);
+		declareHandWinner(1, reportFlag);
 		return;
 	}
 
@@ -158,41 +214,46 @@ void Game::playAHand() {
 	dealACard(true);
 
 	lastRaise = 0;//initialize last raise before betting round
-	cout << endl << "Betting Round 2:" << endl << endl;
+	if (reportFlag) {
+		cout << endl << "Betting Round 2:" << endl << endl;
+	}
 
-	bettingResult = bettingRound(firstBetter, false);
+	bettingResult = bettingRound(firstBetter, false, reportFlag);
 	if (bettingResult == 1) {
-		declareHandWinner(0);
+		declareHandWinner(0, reportFlag);
 		return;
 	}
 	else if (bettingResult == 0) {
-		declareHandWinner(1);
+		declareHandWinner(1, reportFlag);
 		return;
 	}
 
 	dealACard(true);
 
 	lastRaise = 0;
-	cout << endl << "Final Betting Round:" << endl << endl;
-	bettingResult = bettingRound(firstBetter, true);
+	if (reportFlag) {
+		cout << endl << "Final Betting Round:" << endl << endl;
+	}
+
+	bettingResult = bettingRound(firstBetter, true, reportFlag);
 	if (bettingResult == 1) {
-		declareHandWinner(0);
+		declareHandWinner(0, reportFlag);
 		return;
 	}
 	else if (bettingResult == 0) {
-		declareHandWinner(1);
+		declareHandWinner(1, reportFlag);
 		return;
 	}
 
 	//if no one folded at this point, the winner is whoever has a higher value hand
 	if (playerZero->getHand().evaluateHand() > playerOne->getHand().evaluateHand()) {
-		declareHandWinner(0);
+		declareHandWinner(0, reportFlag);
 	}
 	else if (playerOne->getHand().evaluateHand() > playerZero->getHand().evaluateHand()) {
-		declareHandWinner(1);
+		declareHandWinner(1, reportFlag);
 	}
 	else {
-		declareHandWinner(-1);
+		declareHandWinner(-1, reportFlag);
 	}
 
 	return;
@@ -200,8 +261,11 @@ void Game::playAHand() {
 
 void Game::dealACard(bool faceUp) {
 	//get players' hand objects to be able to add a Card object to them
-	Hand p0Hand = playerZero->getHand();
-	Hand p1Hand = playerOne->getHand();
+	Hand p1Hand, p0Hand;
+	p0Hand = playerZero->getHand();
+	p1Hand = playerOne->getHand();
+
+
 
 	//add the next card in the deck to the hand and remove that card from the deck
 	Card card = deck.back();
@@ -219,7 +283,7 @@ void Game::dealACard(bool faceUp) {
 	playerOne->setHand(p1Hand);
 }
 
-int Game::bettingRound(int firstPlayer, bool lastRound) {
+int Game::bettingRound(int firstPlayer, bool lastRound, bool reportFlag) {
 	//variables monitor whether players have called, how many times they have raised and how much they raise during the round
 	bool playerZeroCalled = false, playerOneCalled = false, p0canRaise = true, p1canRaise = true;
 	int p0Raise, p1Raise, p0RaiseCount = 0, p1RaiseCount = 0;
@@ -236,7 +300,7 @@ int Game::bettingRound(int firstPlayer, bool lastRound) {
 
 		//if the first player gets to start the betting rounds
 		if (firstPlayer == 0) {
-			p0Raise = playerZero->getBet(playerOne->getHand().getVisible(), history, lastRaise, pot, lastRound, p0canRaise);
+			p0Raise = playerZero->getBet(playerOne->getHand().getVisible(), history, lastRaise, pot, lastRound, p0canRaise, reportFlag);
 			//if the response is a -1, the player would be a human player signaling to quit the game
 			if (p0Raise == -1) {
 				exit(0);
@@ -279,7 +343,7 @@ int Game::bettingRound(int firstPlayer, bool lastRound) {
 			}
 
 			//next player events mimic the first player's events
-			p1Raise = playerOne->getBet(playerZero->getHand().getVisible(), history, lastRaise, pot, lastRound, p1canRaise);
+			p1Raise = playerOne->getBet(playerZero->getHand().getVisible(), history, lastRaise, pot, lastRound, p1canRaise, reportFlag);
 			if (p1Raise == -1) {
 				exit(0);
 			}
@@ -314,7 +378,7 @@ int Game::bettingRound(int firstPlayer, bool lastRound) {
 
 		//if the second player starts the betting round (code is same, just in reverse, which I know is bad but I couldn't think of an easier way to do it)
 		else {
-			p1Raise = playerOne->getBet(playerZero->getHand().getVisible(), history, lastRaise, pot, lastRound, p1canRaise);
+			p1Raise = playerOne->getBet(playerZero->getHand().getVisible(), history, lastRaise, pot, lastRound, p1canRaise, reportFlag);
 			if (p1Raise == -1) {
 				exit(0);
 			}
@@ -340,7 +404,7 @@ int Game::bettingRound(int firstPlayer, bool lastRound) {
 			}
 			lastRaise = p1Raise - lastRaise;
 
-			p0Raise = playerZero->getBet(playerOne->getHand().getVisible(), history, lastRaise, pot, lastRound, p0canRaise);
+			p0Raise = playerZero->getBet(playerOne->getHand().getVisible(), history, lastRaise, pot, lastRound, p0canRaise, reportFlag);
 			if (p0Raise == -1) {
 				exit(0);
 			}
@@ -374,26 +438,33 @@ int Game::bettingRound(int firstPlayer, bool lastRound) {
 	}
 }
 
-void Game::declareHandWinner(int winner) {
+void Game::declareHandWinner(int winner, bool reportFlag) {
 	//give player the chips and output a message depending on the winner
 	if (winner == 1) {
 		playerOne->setChips(playerOne->getChips() + pot);
 		pot = 0;
-		cout << endl << "Player two wins the hand!" << endl << endl;
+		if (reportFlag) {
+			cout << endl << "AI wins the hand!" << endl << endl;
+		}
 	}
 	else if (winner == 0) {
 		playerZero->setChips(playerZero->getChips() + pot);
 		pot = 0;
-		cout << endl << "Player one wins the hand!" << endl << endl;
+		if (reportFlag) {
+			cout << endl << "You win the hand!" << endl << endl;
+		}
 	}
 	else {
-		cout << endl << "It's a tie! Pot gets carried to next round!" << endl << endl;
+		if (reportFlag) {
+			cout << endl << "It's a tie! Pot gets carried to next round!" << endl << endl;
+		}
 	}
-
-	//output all of the cards in both players' hands
-	cout << "Player One's hand: " << endl;
-	playerZero->getHand().print();
-	cout << endl << "Player Two's hand: " << endl;
-	playerOne->getHand().print();
-	cout << endl;
+	if (reportFlag) {
+		//output all of the cards in both players' hands
+		cout << "Your hand: " << endl;
+		playerZero->getHand().print();
+		cout << endl << "AI's hand: " << endl;
+		playerOne->getHand().print();
+		cout << endl;
+	}
 }

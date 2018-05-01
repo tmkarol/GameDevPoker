@@ -6,7 +6,7 @@ using namespace std;
 HumanPlayer::HumanPlayer() {
 }
 
-int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, bool lastRound, bool canRaise) {
+int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, bool lastRound, bool canRaise, bool reportFlag) {
 	char decision, raiseChar;
 	int raise;
 
@@ -29,15 +29,15 @@ int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, b
 		cin >> decision;
 		cout << endl;
 		//if user enters 'Q', signal to game engine that the user would like to quit
-		if (decision == 'Q') {
+		if (toupper(decision) == 'Q') {
 			return -1;
 		}
 		//if user puts in a different character, show error message and give them another try
-		while (decision != 'C' && decision != 'F') {
+		while (toupper(decision) != 'C' && toupper(decision) != 'F') {
 			cout << "Must pick a valid option! (Enter C or F) ";
 			cin >> decision;
 			cout << endl;
-			if (decision == 'Q') {
+			if (toupper(decision) == 'Q') {
 				return -1;
 			}
 		}
@@ -47,14 +47,14 @@ int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, b
 		cout << "Would you like to raise or call? (Enter R or C) ";
 		cin >> decision;
 		cout << endl;
-		if (decision == 'Q') {
+		if (toupper(decision) == 'Q') {
 			return -1;
 		}
-		while (decision != 'C' && decision != 'R') {
+		while (toupper(decision) != 'C' && toupper(decision) != 'R') {
 			cout << "Must pick a valid option! (Enter R or C) ";
 			cin >> decision;
 			cout << endl;
-			if (decision == 'Q') {
+			if (toupper(decision)== 'Q') {
 				return -1;
 			}
 		}
@@ -64,20 +64,20 @@ int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, b
 		cout << "Would you like to raise, call or fold? (Enter R, C or F) ";
 		cin >> decision;
 		cout << endl;
-		if (decision == 'Q') {
+		if (toupper(decision) == 'Q') {
 			return -1;
 		}
-		while (decision != 'C' && decision != 'F' && decision != 'R') {
+		while (toupper(decision) != 'C' && toupper(decision) != 'F' && toupper(decision) != 'R') {
 			cout << "Must pick a valid option! (Enter R, C or F) ";
 			cin >> decision;
 			cout << endl;
-			if (decision == 'Q') {
+			if (toupper(decision) == 'Q') {
 				return -1;
 			}
 		}
 	}
 	//if user wants to raise, ask for input amount between 1 and 10 and subtract the amount from the player's chips
-	if (decision == 'R') {
+	if (toupper(decision) == 'R') {
 		cout << "How much would you like to raise? (Max raise is 10) ";
 		cin >> raise;
 		cout << endl;
@@ -87,15 +87,16 @@ int HumanPlayer::getBet(Hand opponent, BetHistory bh, int bet2player, int pot, b
 			cout << endl;
 		}
 		chips -= raise;
-		return raise;
+		chips -= bet2player;
+		return raise + bet2player;
 	}
 	//if user wants to call, subtract the previous raise from the player's chips
-	else if (decision == 'C') {
+	else if (toupper(decision) == 'C') {
 		chips -= bet2player;
 		return bet2player;
 	}
 	//if user wants to fold, send back a 0 bet
-	else if (decision == 'F') {
+	else if (toupper(decision) == 'F') {
 		return 0;
 	}
 
